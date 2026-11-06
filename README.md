@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/img/login.webp" alt="Tela de entrada do painel rafs" width="100%">
+<img src="docs/img/login-v2.webp" alt="Tela de entrada do painel rafs" width="100%">
 
 # rafs
 
@@ -31,16 +31,16 @@ critério de parada foi escrito antes de ver qualquer resultado.
 
 ## O painel
 
-<img src="docs/img/overview.webp" alt="Overview: patrimônio, placar de vitórias e derrotas, P&L diário e distribuição dos retornos" width="100%">
+<img src="docs/img/overview-v2.webp" alt="Overview: patrimônio, placar de vitórias e derrotas, P&L diário e distribuição dos retornos" width="100%">
 
-<img src="docs/img/performance.webp" alt="Performance: veredito, comparação entre carteiras, curva de patrimônio e drawdown" width="100%">
+<img src="docs/img/performance-v2.webp" alt="Performance: veredito, comparação entre carteiras, curva de patrimônio e drawdown" width="100%">
 
-<img src="docs/img/mobile.webp" alt="Painel no celular" width="100%">
+<img src="docs/img/mobile-v2.webp" alt="Painel no celular" width="100%">
 
 <details>
 <summary>Agentes da mesa</summary>
 <br>
-<img src="docs/img/agents.webp" alt="Agents: dial do QUANT, checagem de ferramentas do CHIEF" width="100%">
+<img src="docs/img/agents-v2.webp" alt="Agents: dial do QUANT, checagem de ferramentas do CHIEF" width="100%">
 </details>
 
 Servidor HTTP próprio, sem framework: login com senha e sessão, CSRF, limite de tentativas, CSP estrita. Vira app
