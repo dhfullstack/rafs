@@ -10,3 +10,4 @@ data-demo/
 *.log
 *.sqlite3
 .claude/
+showcase/

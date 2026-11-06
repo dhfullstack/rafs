@@ -1,6 +1,6 @@
 """Servidor do painel (stdlib, sem dependências). Login por senha, sessão em cookie HttpOnly, CSRF nos controles.
 
-Controles expostos: pausar, retomar (exige digitar RETOMAR), ligar/desligar kill switch (desligar exige DESLIGAR).
+Controles expostos: pausar, retomar (exige digitar RESUME), ligar/desligar kill switch (desligar exige DISARM).
 Não existe rota para mudar limites, chaves, corretora, sacar ou ligar LIVE.
 """
 
@@ -32,7 +32,7 @@ STATIC_FILES = {"app.js": "text/javascript", "app.css": "text/css", "manifest.we
 SESSION_TTL = 7 * 24 * 3600
 LOGIN_WINDOW, LOGIN_MAX = 300, 5
 MAX_BODY = 4096
-CONFIRM = {"resume": "RETOMAR", "kill_off": "DESLIGAR"}
+CONFIRM = {"resume": "RESUME", "kill_off": "DISARM"}
 SECURITY_HEADERS = {
     "Content-Security-Policy": "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; "
                                "connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
@@ -100,7 +100,7 @@ class DashboardApp:
             recent = [t for t in self.attempts.get(ip, []) if now - t < LOGIN_WINDOW]
             if len(recent) >= LOGIN_MAX:
                 self.attempts[ip] = recent
-                raise PermissionError("muitas tentativas; espere alguns minutos")
+                raise PermissionError("too many attempts; wait a few minutes")
             if not hmac.compare_digest(password.encode(), self._password.encode()):
                 self.attempts[ip] = recent + [now]
                 return None
@@ -136,24 +136,24 @@ class DashboardApp:
 
     def control(self, mode: str, action: str, confirm: str, ip: str) -> str:
         if action in CONFIRM and confirm.strip().upper() != CONFIRM[action]:
-            raise ValueError(f"confirmação incorreta: digite {CONFIRM[action]}")
+            raise ValueError(f"wrong confirmation: type {CONFIRM[action]}")
         storage = Storage(db_for(self.s, mode))
         try:
             if action == "pause":
                 storage.set_paused(True)
-                msg = "Novas entradas pausadas. Saídas (stop/alvo) continuam."
+                msg = "New entries paused. Exits (stop/target) keep working."
             elif action == "resume":
                 storage.set_paused(False)
-                msg = "Novas entradas liberadas."
+                msg = "New entries allowed."
             elif action == "kill_on":
                 self.s.data_dir.mkdir(parents=True, exist_ok=True)
                 self.s.kill_switch_path.write_text(time.strftime("%Y-%m-%d %H:%M:%S"), encoding="utf-8")
-                msg = "Kill switch ATIVO: nenhuma entrada nova em nenhum ambiente."
+                msg = "Kill switch ARMED: no new entries in any environment."
             elif action == "kill_off":
                 self.s.kill_switch_path.unlink(missing_ok=True)
-                msg = "Kill switch desligado."
+                msg = "Kill switch disarmed."
             else:
-                raise ValueError("ação desconhecida")
+                raise ValueError("unknown action")
             storage.log_event("CONTROL", f"{action} via painel ({ip}) [{mode}]")
             return msg
         finally:
@@ -194,10 +194,10 @@ def make_handler(app: DashboardApp):
         def _body(self) -> dict:
             n = int(self.headers.get("Content-Length") or 0)
             if n > MAX_BODY:
-                raise ValueError("requisição grande demais")
+                raise ValueError("request too large")
             data = json.loads(self.rfile.read(n) or b"{}")
             if not isinstance(data, dict):
-                raise ValueError("JSON inválido")
+                raise ValueError("invalid JSON")
             return data
 
         def _mode(self, value: str | None) -> str:
@@ -218,7 +218,7 @@ def make_handler(app: DashboardApp):
                 return self._json(200, {"authenticated": csrf is not None, "csrf": csrf})
             if path == "/api/state":
                 if app.session(self._token()) is None:
-                    return self._json(401, {"error": "não autenticado"})
+                    return self._json(401, {"error": "not authenticated"})
                 try:
                     mode = self._mode(parse_qs(url.query).get("env", [None])[0])
                     return self._json(200, app.state(mode))
@@ -227,7 +227,7 @@ def make_handler(app: DashboardApp):
                 except Exception as e:  # noqa: BLE001
                     log.warning("painel /api/state: %s", e)
                     return self._json(500, {"error": f"{type(e).__name__}"})
-            return self._json(404, {"error": "não encontrado"})
+            return self._json(404, {"error": "not found"})
 
         def do_POST(self):
             path = urlparse(self.path).path
@@ -242,15 +242,15 @@ def make_handler(app: DashboardApp):
                 except PermissionError as e:
                     return self._json(429, {"error": str(e)})
                 if res is None:
-                    return self._json(401, {"error": "senha incorreta"})
+                    return self._json(401, {"error": "wrong password"})
                 token, csrf = res
                 cookie = f"gb_session={token}; HttpOnly; SameSite=Strict; Path=/; Max-Age={SESSION_TTL}"
                 return self._json(200, {"csrf": csrf}, {"Set-Cookie": cookie})
             csrf = app.session(self._token())
             if csrf is None:
-                return self._json(401, {"error": "não autenticado"})
+                return self._json(401, {"error": "not authenticated"})
             if not hmac.compare_digest(self.headers.get("X-CSRF", ""), csrf):
-                return self._json(403, {"error": "token CSRF inválido"})
+                return self._json(403, {"error": "invalid CSRF token"})
             if path == "/api/logout":
                 app.logout(self._token())
                 return self._json(200, {"ok": True}, {"Set-Cookie": "gb_session=; Max-Age=0; Path=/"})
@@ -261,7 +261,7 @@ def make_handler(app: DashboardApp):
                     return self._json(200, {"ok": True, "message": msg})
                 except ValueError as e:
                     return self._json(400, {"error": str(e)})
-            return self._json(404, {"error": "não encontrado"})
+            return self._json(404, {"error": "not found"})
 
     return Handler
 

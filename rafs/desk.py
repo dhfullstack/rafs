@@ -35,8 +35,8 @@ MOVE_ALERT_PCT = 10.0  # mensagem no meio da sessão só quando um número mexe 
 PROOF_RETRY_S = 1800  # checagem vermelha: tenta de novo a cada 30 min (o sleeve volta quando passar)
 DIAL_RETRY_S = 900
 QUANT_BOOK = "quant"
-MEMES_OFF = {"memes": "MEME_SLEEVE=0: SCAN e JUDGE de memecoins desligados"}
-STOCKS_OFF = {"stocks": "sem Alpaca/QuantGPT: STOCKS e o Runner (TQQQ/SHY) não existem aqui"}
+MEMES_OFF = {"memes": "MEME_SLEEVE=0: memecoin SCAN and JUDGE off"}
+STOCKS_OFF = {"stocks": "no Alpaca/QuantGPT: STOCKS and the Runner (TQQQ/SHY) do not exist here"}
 SLEEVES_OFF = {**MEMES_OFF, **STOCKS_OFF}
 MEME_BOOKS = ("memes", "memes_top")
 GREEN_LABELS = {"liquidity": "liquidez", "volatility": "VIX", "credit": "crédito", "btc": "BTC>200d",

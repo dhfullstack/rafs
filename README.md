@@ -31,24 +31,26 @@ critério de parada foi escrito antes de ver qualquer resultado.
 
 ## O painel
 
-<table>
-  <tr>
-    <td width="50%"><img src="docs/img/overview.webp" alt="Visão geral: patrimônio, caixa, posições"></td>
-    <td width="50%"><img src="docs/img/performance.webp" alt="Desempenho: curva das carteiras e veredito"></td>
-  </tr>
-  <tr>
-    <td><img src="docs/img/agents.webp" alt="Agentes da mesa: status, latência, execuções"></td>
-    <td align="center"><img src="docs/img/mobile.webp" alt="Painel no celular" width="46%"></td>
-  </tr>
-</table>
+<img src="docs/img/overview.webp" alt="Overview: patrimônio, placar de vitórias e derrotas, P&L diário e distribuição dos retornos" width="100%">
+
+<img src="docs/img/performance.webp" alt="Performance: veredito, comparação entre carteiras, curva de patrimônio e drawdown" width="100%">
+
+<img src="docs/img/mobile.webp" alt="Painel no celular" width="100%">
+
+<details>
+<summary>Agentes da mesa</summary>
+<br>
+<img src="docs/img/agents.webp" alt="Agents: dial do QUANT, checagem de ferramentas do CHIEF" width="100%">
+</details>
 
 Servidor HTTP próprio, sem framework: login com senha e sessão, CSRF, limite de tentativas, CSP estrita. Vira app
 na tela de início do iPhone. Serve para **acompanhar e frear** (pausar, kill switch), nunca para mudar limites ou
-ver chaves. O fundo em halftone é desenhado num `<canvas>` a partir de um mapa de tons de 243×196 px.
+ver chaves. Os gráficos (patrimônio, drawdown, P&L diário, distribuição dos retornos) são SVG desenhado à mão, e o
+fundo em halftone é um `<canvas>` gerado a partir de um mapa de tons de 243×196 px.
 
-> Os prints são de um backtest real de 14 dias (BTC/ETH/SOL em BRL, 15m), rodado sem chave do Jev, por isso só
-> aparecem `baseline` e `random`. Os dois perdem depois das taxas, e é exatamente isso que o projeto existe
-> para medir.
+> **Os prints usam dados fictícios**, gerados por [`scripts/seed_demo.py`](scripts/seed_demo.py) só para mostrar a
+> interface (98 vitórias, 24 derrotas, US$ 88.234,22). Não saíram de nenhuma execução real. Os números de verdade
+> estão em [O que os números disseram](#o-que-os-números-disseram-até-agora), e por enquanto são bem menos bonitos.
 
 ## Modos
 
@@ -75,6 +77,7 @@ copy .env.example .env
 .venv\Scripts\python -m rafs run --dashboard            # paper ao vivo + painel em localhost:8787
 .venv\Scripts\python -m rafs report                     # saldo, posições e comparação
 .venv\Scripts\python -m pytest -q                       # 191 testes
+.venv\Scripts\python scripts\seed_demo.py showcase       # banco fictício para ver o painel
 ```
 
 Sem `JEV_API_KEY` o bot roda só com `baseline` e `random`. Sem `DASHBOARD_PASSWORD`, a senha do painel é gerada

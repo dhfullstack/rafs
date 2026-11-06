@@ -44,7 +44,7 @@ def test_state_reflects_books_positions_and_agents(settings, rules):
     assert agents["SCAN"]["activity"].startswith("SOL/BRL") and agents["FILLS"]["ok"]
     assert agents["JUDGE"]["status"] == "off" and agents["STOCKS"]["status"] == "off"  # sem Jev; sem Alpaca
     assert d["system"]["running"] is False  # sem heartbeat do loop
-    assert "SIMULADO" in d["disclaimer"]
+    assert "SIMULATED" in d["disclaimer"]
 
 
 def test_backtest_engine_writes_no_telemetry(settings, rules):
@@ -100,13 +100,13 @@ def test_controls_require_confirmation(settings, rules):
     assert Storage(settings.db_path).is_paused()
     with pytest.raises(ValueError):
         app.control("PAPER", "resume", "sim", "127.0.0.1")
-    app.control("PAPER", "resume", "retomar", "127.0.0.1")
+    app.control("PAPER", "resume", "resume", "127.0.0.1")
     assert not Storage(settings.db_path).is_paused()
     app.control("PAPER", "kill_on", "", "127.0.0.1")
     assert settings.kill_switch_path.exists()
     with pytest.raises(ValueError):
         app.control("PAPER", "kill_off", "", "127.0.0.1")
-    app.control("PAPER", "kill_off", "DESLIGAR", "127.0.0.1")
+    app.control("PAPER", "kill_off", "DISARM", "127.0.0.1")
     assert not settings.kill_switch_path.exists()
     with pytest.raises(ValueError):
         app.control("PAPER", "set_limit", "", "127.0.0.1")

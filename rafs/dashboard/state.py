@@ -14,20 +14,20 @@ from ..metrics import max_drawdown, performance
 from ..portfolio import utc_day
 from ..storage import Storage
 
-DISCLAIMER = "SIMULADO — sem dinheiro real. Valores não são lucro real."
+DISCLAIMER = "SIMULATED — no real money. Values are not real profit."
 MODE_DB = {"PAPER": "rafs.sqlite3", "TESTNET": "rafs-testnet.sqlite3", "FUTURES": "rafs-futures.sqlite3"}
 AGENTS = [  # as 8 cadeiras do guia "The Hedge Fund Terminal"
-    ("CHIEF", "Prova as ferramentas às 06:00 NY, lê o mercado (Grok), escala ao Jev e manda o relatório das 23:55"),
-    ("QUANT", "Dial de risco do dia (FRED + Binance) e alvos de momentum 12-1. Nunca opera"),
-    ("SCAN", "Candles dos pares fixos. Memes: GeckoTerminal (solana/bsc) com o corte do guia"),
-    ("JUDGE", "Jev decide comprar, segurar ou vender. Memes: escolhe um candidato ou nenhum. Lê o dial, nunca muda"),
-    ("STOCKS", "Ações e Runner (TQQQ/SHY) do guia"),
-    ("SIZE", "Ticket × dial e mínimos da corretora. Memes: Kelly, teto 6%, 2% da liquidez. Só reduz"),
-    ("FILLS", "Envio e confirmação das ordens, slippage e parciais"),
-    ("RISK", "Veto final: conta −4% no dia vira FLAT, exposição, perda diária, spread, kill switch"),
+    ("CHIEF", "Checks every tool at 06:00 NY, reads the market (Grok), escalates to Jev and sends the 23:55 report"),
+    ("QUANT", "Daily risk dial (FRED + Binance) and 12-1 momentum targets. Never trades"),
+    ("SCAN", "Candles for the fixed pairs. Memes: GeckoTerminal (solana/bsc) with the guide's cut"),
+    ("JUDGE", "Jev decides buy, hold or sell. Memes: picks one candidate or none. Reads the dial, never changes it"),
+    ("STOCKS", "Stocks and the Runner (TQQQ/SHY) from the guide"),
+    ("SIZE", "Ticket × dial and exchange minimums. Memes: Kelly, 6% cap, 2% of liquidity. Only shrinks"),
+    ("FILLS", "Sends and confirms orders, tracks slippage and partials"),
+    ("RISK", "Final veto: −4% on the day goes FLAT, exposure, daily loss, spread, kill switch"),
 ]
-OFF_REASONS = {"STOCKS": "Sem Alpaca/QuantGPT aqui: esta cadeira do guia fica desligada.",
-               "JUDGE": "Sem JEV_API_KEY: o Jev não está decidindo."}
+OFF_REASONS = {"STOCKS": "No Alpaca/QuantGPT here: this seat stays off.",
+               "JUDGE": "No JEV_API_KEY: Jev is not deciding."}
 MAX_CURVE_POINTS = 400
 
 
@@ -40,7 +40,7 @@ def available_modes(settings: Settings) -> list[str]:
 
 def db_for(settings: Settings, mode: str) -> Path:
     if mode not in MODE_DB:
-        raise ValueError(f"ambiente inválido: {mode}")
+        raise ValueError(f"invalid environment: {mode}")
     return settings.data_dir / MODE_DB[mode]
 
 
