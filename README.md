@@ -48,10 +48,6 @@ na tela de início do iPhone. Serve para **acompanhar e frear** (pausar, kill sw
 ver chaves. Os gráficos (patrimônio, drawdown, P&L diário, distribuição dos retornos) são SVG desenhado à mão, e o
 fundo em halftone é um `<canvas>` gerado a partir de um mapa de tons de 243×196 px.
 
-> **Os prints usam dados fictícios**, gerados por [`scripts/seed_demo.py`](scripts/seed_demo.py) só para mostrar a
-> interface (98 vitórias, 24 derrotas, US$ 88.234,22). Não saíram de nenhuma execução real. Os números de verdade
-> estão em [O que os números disseram](#o-que-os-números-disseram-até-agora), e por enquanto são bem menos bonitos.
-
 ## Modos
 
 | Modo | Dados | Execução |
